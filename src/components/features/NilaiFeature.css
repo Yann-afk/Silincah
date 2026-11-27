@@ -1,0 +1,120 @@
+/* ============================================================================
+   Gaya khusus fitur Nilai & Transkrip (KHS).
+   Akordeon dikendalikan lewat kelas (bukan render kondisional) agar seluruh
+   rincian dapat dipaksa terbuka saat mencetak lewat @media print.
+   Semua warna memakai CSS variables dari tokens.css (mode terang/gelap).
+   ============================================================================ */
+
+.nilai-accordion-header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background-color: transparent;
+  border: none;
+  padding: 6px 8px;
+  margin: -6px -8px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.nilai-accordion-header:hover {
+  background-color: var(--surface-alt);
+}
+
+.nilai-accordion-header .nilai-judul {
+  transition: color 0.15s ease;
+}
+
+.nilai-accordion-header:hover .nilai-judul {
+  color: var(--primary);
+}
+
+.nilai-accordion-body {
+  display: none;
+}
+
+.nilai-accordion-body.open {
+  display: block;
+}
+
+.nilai-chevron {
+  transition: transform 0.15s ease;
+}
+
+.nilai-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Hanya tampil pada hasil cetak (header identitas dokumen). */
+.print-only {
+  display: none;
+}
+
+/* ----------------------------------------------------------------------------
+   Gaya cetak: bersih tanpa sidebar, topbar, breadcrumb, dan tombol aksi.
+   Palet dipaksa terang agar terbaca di atas kertas apa pun tema aktif;
+   override ditulis dengan specificity lebih tinggi dari tokens.css sehingga
+   urutan bundel CSS tidak berpengaruh.
+---------------------------------------------------------------------------- */
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  :root,
+  :root[data-theme="dark"] {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-alt: #f1f5f3;
+    --border: #c9d4ce;
+    --text: #111827;
+    --text-muted: #4b6358;
+    --primary: #0f766e;
+    --primary-hover: #0d5e58;
+    --primary-soft: #e6f4f1;
+    --primary-text: #ffffff;
+    --danger: #b91c1c;
+    --danger-soft: #fef2f2;
+    --shadow: none;
+  }
+
+  .sidebar,
+  .topbar,
+  .mobile-menu-btn,
+  .mobile-drawer-backdrop,
+  .breadcrumbs,
+  .no-print {
+    display: none !important;
+  }
+
+  .shell {
+    display: block;
+  }
+
+  .content-wrap {
+    max-width: none;
+    padding: 0;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: var(--text);
+  }
+
+  .card {
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  /* Seluruh rincian akordeon terbuka pada hasil cetak. */
+  .nilai-accordion-body {
+    display: block !important;
+  }
+
+  .print-only {
+    display: block;
+  }
+}

@@ -1,0 +1,55 @@
+﻿/* ============================================================================
+   Layout area konten (shell, sidebar, dan topbar dipindahkan ke
+   src/components/layout/AppShell.css).
+   ============================================================================ */
+
+.content-wrap {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.card-hover:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+/* Judul kartu sub-menu: warna eksplisit dari token tema agar tetap
+   kontras pada mode Light, Sunset/Twilight, dan Dark. */
+.card-title {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1.02rem;
+  line-height: 1.35;
+}
+
+.search-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px 10px 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
+@media (max-width: 900px) {
+  .content-wrap {
+    padding: 16px;
+  }
+}

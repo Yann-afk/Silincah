@@ -1,0 +1,108 @@
+/* ============================================================================
+   Kursor kustom SILINCAH (terinspirasi Curzr) + Magnetic Morphing Ring.
+   ----------------------------------------------------------------------------
+   Semua warna memakai CSS variables dari tokens.css agar kontras pada mode
+   terang maupun gelap. Elemen kursor memakai position: fixed sehingga posisi
+   selalu akurat terhadap viewport (clientX/clientY) tanpa overflow: hidden.
+
+   Magnetic Morphing (mode ring-dot): ketika pointer berada di atas elemen
+   navigasi (nav a/button, header button), cincin menempel pada elemen itu —
+   mengikuti getBoundingClientRect() (lebar, tinggi, posisi, border-radius)
+   dengan transisi ±200ms. Cincin kembali menjadi lingkaran biasa saat pointer
+   meninggalkan elemen navigasi.
+   ============================================================================ */
+
+.custom-cursor-elemen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  will-change: transform;
+}
+
+.custom-cursor-elemen.is-visible {
+  opacity: 1;
+}
+
+/* Titik kecil di tengah cincin (varian RingDot). */
+.custom-cursor-dot-visual {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  box-shadow: 0 0 0 1.5px var(--surface);
+  transition: transform 0.18s ease;
+}
+
+/* Cincin yang membesar halus saat hover di elemen interaktif / kartu.
+   Bentuknya juga berubah halus saat mode magnetic morphing aktif. */
+.custom-cursor-ring-visual {
+  display: block;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--primary);
+  background-color: transparent;
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    width 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    height 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms ease,
+    border-color 0.18s ease;
+}
+
+.custom-cursor-dot-visual.is-hover {
+  transform: scale(0.45);
+}
+
+.custom-cursor-ring-visual.is-hover {
+  transform: scale(1.55);
+  border-color: var(--text);
+}
+
+/* --- Magnetic morphing --------------------------------------------------- */
+
+/* Cincin menempel pada elemen navigasi: bentuk mengikuti ukuran elemen dan
+   memakai latar aksen tipis (10% opasitas). */
+.custom-cursor-ring-visual.is-morphing {
+  transform: scale(1);
+  border-color: var(--primary);
+  background-color: var(--primary-soft);
+  background-color: color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+/* Saat morphing aktif, container cincin yang dianimasikan (posisi target). */
+.custom-cursor-elemen.custom-cursor-ring.is-morphing {
+  transition:
+    opacity 0.15s ease,
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Panah varian ArrowPointer — rotasi diatur dari JavaScript. */
+.custom-cursor-arrow-visual {
+  display: block;
+  filter: drop-shadow(0 1px 2px var(--border));
+}
+
+/* Sembunyikan kursor asli selama kursor kustom aktif. */
+html.silincah-kursor-aktif,
+html.silincah-kursor-aktif * {
+  cursor: none !important;
+}
+
+/* Mode cetak: elemen kursor tidak ikut tercetak dan kursor asli kembali. */
+@media print {
+  .custom-cursor-elemen {
+    display: none !important;
+  }
+
+  html.silincah-kursor-aktif,
+  html.silincah-kursor-aktif * {
+    cursor: auto !important;
+  }
+}

@@ -1,0 +1,297 @@
+/* ============================================================================
+   Pengalih tema 3 stop (Light / Sunset / Dark) — pill kompak untuk topbar.
+   ========================================================================== */
+
+.theme-mood {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.theme-mood-pill {
+  position: relative;
+  width: 114px;
+  height: 40px;
+  padding: 4px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  /* Track memetakan lintasan lingkaran warna: Light Original (kiri) →
+     Twilight (tengah) → Reverse Dark (kanan). */
+  background-color: #dfe6f6;
+  background-image: linear-gradient(
+    90deg,
+    #eef2fb 0%,
+    #d9e1f6 24%,
+    #8fa2ff 52%,
+    #3a4272 76%,
+    #131a35 100%
+  );
+  transition:
+    background-color 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 650ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-mood-knob-wrap {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  z-index: 1;
+  width: calc((100% - 8px) / 3);
+  height: calc(100% - 8px);
+  pointer-events: none;
+  transform: translateX(calc(var(--theme-mood-index, 0) * 100%));
+  transition: transform 420ms cubic-bezier(0.34, 1.32, 0.52, 1);
+}
+
+.theme-mood-knob {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  background-color: var(--theme-mood-knob-bg, var(--accent-primary));
+  color: var(--theme-mood-knob-fg, var(--primary-text));
+  box-shadow: 0 2px 8px rgba(10, 6, 20, 0.28);
+  transition:
+    background-color 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 650ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-mood-stops {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  height: 100%;
+}
+
+.theme-mood-stop {
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: transparent;
+  cursor: pointer;
+}
+
+.theme-mood-stop:focus-visible {
+  outline: 2px solid var(--accent-primary-strong);
+  outline-offset: -3px;
+}
+
+.theme-mood-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Ikon di dalam knob --------------------------------------------------- */
+
+.theme-mood-icon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: scale(0.55);
+  transition: opacity 320ms ease, transform 320ms ease;
+}
+
+.theme-mood-icon.is-active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.theme-mood-svg {
+  width: 20px;
+  height: 20px;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Matahari: sinar berputar + inti pekat */
+.theme-mood-rays {
+  transform-origin: 12px 12px;
+  animation: theme-mood-spin 18s linear infinite;
+}
+
+.theme-mood-core {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Senja: pendaran hangat + riak cakrawala */
+.theme-mood-halo {
+  opacity: 0.5;
+  transform-origin: 12px 13.1px;
+  animation: theme-mood-pulse 3.2s ease-in-out infinite;
+}
+
+.theme-mood-glow {
+  animation: theme-mood-shimmer 3.6s ease-in-out infinite;
+}
+
+.theme-mood-arc {
+  fill: currentColor;
+  stroke: none;
+}
+
+.theme-mood-wave {
+  animation: theme-mood-drift 6s ease-in-out infinite;
+}
+
+.theme-mood-wave--2 {
+  animation-duration: 8.5s;
+  animation-direction: reverse;
+}
+
+/* Gelap: bulan sabit + 4 bintang berkelip */
+.theme-mood-crescent {
+  fill: currentColor;
+  stroke: none;
+}
+
+.theme-mood-star {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: theme-mood-twinkle 2.6s ease-in-out infinite;
+}
+
+.theme-mood-star--2 {
+  animation-delay: 0.45s;
+}
+
+.theme-mood-star--3 {
+  animation-delay: 0.9s;
+}
+
+.theme-mood-star--4 {
+  animation-delay: 1.35s;
+}
+
+/* --- Tombol suara --------------------------------------------------------- */
+
+.theme-mood-sound {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.theme-mood-sound:hover {
+  background-color: var(--surface-alt);
+  color: var(--text);
+}
+
+.theme-mood-sound[aria-pressed='true'] {
+  border-color: transparent;
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
+
+.theme-mood-sound:focus-visible {
+  outline: 2px solid var(--accent-primary-strong);
+  outline-offset: 2px;
+}
+
+/* --- Keyframes ------------------------------------------------------------ */
+
+@keyframes theme-mood-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes theme-mood-pulse {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes theme-mood-shimmer {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes theme-mood-drift {
+  0%,
+  100% {
+    transform: translateX(-1.2px);
+  }
+  50% {
+    transform: translateX(1.2px);
+  }
+}
+
+@keyframes theme-mood-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.55);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* --- Reduced motion & cetak ---------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-mood-pill,
+  .theme-mood-knob-wrap,
+  .theme-mood-knob,
+  .theme-mood-icon,
+  .theme-mood-sound {
+    transition: none;
+  }
+
+  .theme-mood-rays,
+  .theme-mood-halo,
+  .theme-mood-glow,
+  .theme-mood-wave,
+  .theme-mood-star {
+    animation: none;
+  }
+}
+
+@media print {
+  .theme-mood {
+    display: none !important;
+  }
+}

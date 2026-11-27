@@ -1,0 +1,254 @@
+/* ============================================================================
+   Layout navigasi utama SILINCAH (AppShell).
+   Berisi kerangka shell/sidebar/topbar serta interaksi "spotlight focus
+   dimming": saat kelompok navigasi di-hover dengan mouse, item yang tidak
+   hovered diredupkan halus; item hovered/aktif tetap penuh. Peredupan otomatis
+   dinonaktifkan pada perangkat sentuh, prefers-reduced-motion, dan saat cetak.
+   ============================================================================ */
+
+.shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+}
+
+.sidebar {
+  /* Konteks navy sidebar: token semantik di-scope agar brand, menu, badge,
+     dan tombol keluar otomatis memakai kontras yang tepat pada latar gelap.
+     Mode Light memakai Tazkia Navy (#1B2A59) dengan teks putih, mode
+     Twilight memakai Indigo (#1B2038), mode Dark memakai Obsidian (#090D1A). */
+  --surface: var(--bg-sidebar);
+  --surface-alt: rgba(255, 255, 255, 0.12);
+  --surface-alt: color-mix(in srgb, var(--sidebar-text) 12%, transparent);
+  --border: var(--border-subtle);
+  --text: var(--sidebar-text);
+  --text-muted: var(--sidebar-text-muted);
+  --primary: var(--sidebar-accent);
+  --primary-hover: var(--sidebar-accent);
+  --primary-soft: rgba(245, 162, 76, 0.2);
+  --primary-soft: color-mix(in srgb, var(--sidebar-accent) 20%, transparent);
+  --primary-text: var(--bg-sidebar);
+  --danger: #ff9a91;
+  --danger-soft: rgba(255, 154, 145, 0.16);
+
+  width: 272px;
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-subtle);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid color-mix(in srgb, var(--sidebar-text) 18%, transparent);
+  margin-bottom: 16px;
+  /* Hero brand memakai gradasi aksen sekunder mode aktif. */
+  background-image: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--bg-sidebar) 82%, var(--accent-secondary)),
+    var(--bg-sidebar)
+  );
+  border-radius: var(--radius-sm);
+}
+
+/* Brand SILINCAH sebagai jalan pintas kembali ke Dashboard (terutama di
+   mobile saat sidebar berupa drawer). */
+.sidebar-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 4px;
+  margin: -4px;
+  border-radius: var(--radius-sm);
+  color: inherit;
+}
+
+.sidebar-brand-link:hover {
+  color: var(--primary);
+}
+
+.sidebar-brand-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+.nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.925rem;
+  transition:
+    opacity 200ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.nav-item:hover {
+  background-color: var(--surface-alt);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background-color: var(--primary);
+  color: var(--primary-text);
+  font-weight: 600;
+}
+
+.nav-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-count {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: var(--surface-alt);
+  color: var(--text-muted);
+}
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Kelompok kontrol kanan topbar: boleh membungkus agar tidak meluap di
+   layar sempit (pill tema 3 stop + tombol suara). */
+.topbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.mobile-menu-btn {
+  display: none;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.breadcrumbs a:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.mobile-drawer-backdrop {
+  display: none;
+}
+
+/* --- Spotlight focus dimming --------------------------------------------- */
+/* Hanya aktif untuk pointer presisi (mouse/trackpad), pengguna yang tidak
+   memilih reduced motion, dan hanya di layar (bukan saat cetak).
+   `:not(:focus-within)` memastikan navigasi keyboard tidak pernah diredupkan. */
+
+@media screen and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .nav-list:not(:focus-within):hover > .nav-item:not(:hover):not(.active):not(:focus-visible) {
+    opacity: 0.55;
+  }
+
+  .topbar-actions:not(:focus-within):hover > *:not(:hover):not(:focus-visible) {
+    opacity: 0.55;
+  }
+}
+
+/* Transisi opasitas untuk item navigasi dan tombol topbar. */
+.topbar-actions > * {
+  transition: opacity 200ms ease;
+}
+
+.topbar-actions > .btn {
+  transition: background-color 0.15s, border-color 0.15s, opacity 200ms ease;
+}
+
+/* --- Layar sempit --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .mobile-drawer-backdrop.open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background-color: rgba(0, 0, 0, 0.45);
+  }
+
+  .topbar {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+
+  .topbar-actions {
+    gap: 6px;
+  }
+}

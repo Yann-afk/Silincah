@@ -1,0 +1,39 @@
+/* Latar jaringan titik (constellation) — dekoratif, tidak menangkap interaksi. */
+.constellation-bg {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Tombol topbar: tampil sebagai aksi ikon ringkas agar tidak meluap di mobile. */
+.constellation-toggle {
+  flex-shrink: 0;
+}
+
+.constellation-toggle.is-active {
+  border-color: transparent;
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
+
+.constellation-toggle.is-active:hover {
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
+
+@media print {
+  .constellation-bg {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Animasi dihentikan di JS; kanvas tetap tampil statis. */
+  .constellation-toggle {
+    transition: none;
+  }
+}

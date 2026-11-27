@@ -1,0 +1,306 @@
+/* Dock navigasi bawah dengan kurva aktif.
+   Warna diambil dari tokens.css agar otomatis mengikuti mode terang/gelap. */
+
+.has-tab-dock {
+  --dock-tinggi: 74px;
+}
+
+.tab-dock {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 30;
+  height: calc(74px + env(safe-area-inset-bottom, 0px));
+  filter: drop-shadow(0 -3px 12px rgba(8, 16, 13, 0.16));
+  isolation: isolate;
+  touch-action: manipulation;
+}
+
+.tab-dock-permukaan {
+  position: absolute;
+  inset: 0;
+  background-color: var(--surface);
+  /* clip-path diatur lewat JS mengikuti item aktif. */
+  will-change: clip-path;
+}
+
+.tab-dock-garis {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.tab-dock-garis path {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.tab-dock-indikator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 0;
+  height: 0;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  will-change: transform;
+}
+
+/* Tidak ada pintasan dock yang sedang aktif (mis. di Dashboard):
+   indikator disembunyikan dan permukaan dock dibuat rata. */
+.tab-dock.tanpa-item-aktif .tab-dock-indikator {
+  opacity: 0;
+}
+
+.tab-dock-lingkaran {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 50px;
+  margin-top: -25px;
+  margin-left: -25px;
+  box-sizing: border-box;
+  border: 3px solid var(--surface);
+  border-radius: 50%;
+  background-color: var(--primary);
+  box-shadow: var(--shadow);
+  animation: tab-dock-pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tab-dock-pop {
+  from {
+    opacity: 0.45;
+    transform: scale(0.55);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.tab-dock-dalam {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  width: 100%;
+  max-width: 560px;
+  height: 74px;
+  margin: 0 auto;
+  padding: 0 6px;
+}
+
+.tab-dock-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+  min-height: 44px;
+  height: 74px;
+  margin: 0;
+  padding: 8px 2px 10px;
+  border: 0;
+  border-radius: 16px;
+  background-color: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab-dock-item:hover {
+  color: var(--text);
+  background-color: var(--surface-alt);
+}
+
+.tab-dock-item:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.tab-dock-item.is-active {
+  color: var(--primary);
+}
+
+.tab-dock-item.is-active:hover {
+  background-color: transparent;
+}
+
+.tab-dock-ikon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), color 0.2s ease;
+}
+
+.tab-dock-item.is-active .tab-dock-ikon {
+  color: var(--primary-text);
+  transform: translateY(-26px);
+}
+
+/* Animasi garis ikon: gambar ulang stroke saat item menjadi aktif. */
+.tab-dock-item.is-active .tab-dock-ikon svg * {
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  animation: tab-dock-gambar-garis 480ms ease-out forwards;
+}
+
+@keyframes tab-dock-gambar-garis {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.tab-dock-label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.64, 1), color 0.2s ease;
+}
+
+.tab-dock-item.is-active .tab-dock-label {
+  font-weight: 700;
+  transform: translateY(2px);
+}
+
+/* Beri ruang agar konten terakhir tidak tertutup dock. */
+.has-tab-dock .content-wrap {
+  padding-bottom: calc(var(--dock-tinggi) + 48px + env(safe-area-inset-bottom, 0px));
+}
+
+.tab-dock-toggle.is-active {
+  color: var(--primary);
+  background-color: var(--primary-soft);
+}
+
+/* Di layar sempit, label topbar disembunyikan agar tombol dock tetap muat.
+   Ikon dan aria-label tetap memberi konteks bagi pembaca layar. */
+@media (max-width: 640px) {
+  .topbar-action-label {
+    display: none;
+  }
+}
+
+/* Di layar mobile, label 1–2 kata boleh turun dua baris agar tidak
+   terpotong (contoh: "Kumpul Tugas" dan "Daftar Tugas"). */
+@media (max-width: 768px) {
+  .tab-dock-item {
+    font-size: 0.66rem;
+  }
+
+  .tab-dock-label {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: clip;
+    line-height: 1.08;
+  }
+}
+
+/* Layar kecil: notch, lingkaran, dan ikon sedikit lebih ringkas. */
+@media (max-width: 480px) {
+  .has-tab-dock {
+    --dock-tinggi: 68px;
+  }
+
+  .tab-dock {
+    height: calc(68px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .tab-dock-dalam {
+    height: 68px;
+    padding: 0 2px;
+  }
+
+  .tab-dock-item {
+    height: 68px;
+    gap: 2px;
+    padding: 6px 1px 8px;
+    font-size: 0.64rem;
+  }
+
+  .tab-dock-lingkaran {
+    width: 46px;
+    height: 46px;
+    margin-top: -23px;
+    margin-left: -23px;
+    border-width: 2.5px;
+  }
+
+  .tab-dock-item.is-active .tab-dock-ikon {
+    transform: translateY(-23px);
+  }
+
+  .tab-dock-item.is-active .tab-dock-label {
+    transform: translateY(1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab-dock-permukaan {
+    will-change: auto;
+  }
+
+  .tab-dock-lingkaran {
+    animation: none;
+  }
+
+  .tab-dock-item,
+  .tab-dock-ikon,
+  .tab-dock-label,
+  .tab-dock-indikator {
+    transition: none;
+  }
+
+  .tab-dock-item.is-active .tab-dock-ikon svg * {
+    animation: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+@supports not (clip-path: path("M0 0")) {
+  .tab-dock-permukaan {
+    clip-path: none !important;
+    border-top: 1px solid var(--border);
+  }
+
+  .tab-dock-garis {
+    display: none;
+  }
+}
+
+@media print {
+  .tab-dock {
+    display: none !important;
+  }
+
+  .has-tab-dock .content-wrap {
+    padding-bottom: 0 !important;
+  }
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SILINCAH">
+  <rect width="64" height="64" rx="16" fill="#0d6248"/>
+  <path d="M16 20.5C16 17.46 18.46 15 21.5 15H32v34H21.5C18.46 49 16 46.54 16 43.5v-23Z" fill="#ffffff" opacity=".96"/>
+  <path d="M34 15h10.5C47.54 15 50 17.46 50 20.5v23c0 3.04-2.46 5.5-5.5 5.5H34V15Z" fill="#9af2cf" opacity=".92"/>
+  <path d="M24 25h3M24 32h3M40 25h3M40 32h3" stroke="#0d6248" stroke-width="2.4" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,1023 @@
+/* ============================================================================
+   Fitur Presensi (kehadiran Semester 5).
+   Semua warna inti memakai tokens.css; warna aksen cincin didefinisikan per
+   mata kuliah dengan pasangan terang/gelap yang kontrasnya >= 3:1 terhadap
+   permukaan kartu.
+   ============================================================================ */
+
+.presensi {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* --- Kartu kesimpulan & donat multi-segmen ------------------------------- */
+
+.presensi-overall.card {
+  padding: 18px;
+  margin: 0;
+}
+
+.presensi-overall-kepala {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 6px 20px;
+  margin-bottom: 16px;
+}
+
+.presensi-overall-kepala h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.presensi-overall-sub {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.presensi-overall-petunjuk {
+  max-width: 330px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.presensi-overall-isi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px 32px;
+}
+
+.presensi-donat {
+  position: relative;
+  flex: 0 0 auto;
+  width: 240px;
+  height: 240px;
+}
+
+.presensi-donat svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.presensi-donat-latar {
+  stroke: var(--surface-alt);
+}
+
+.presensi-donat-segmen {
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.18s ease;
+}
+
+.presensi-donat-segmen.is-dim {
+  opacity: 0.25;
+}
+
+.presensi-donat-segmen:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+.presensi-donat-tengah {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 46px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.presensi-donat-label {
+  color: var(--text-muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.presensi-donat-nilai {
+  color: var(--text);
+  font-size: 1.85rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.05;
+}
+
+.presensi-donat-persen {
+  margin-left: 1px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.presensi-donat-keterangan {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.presensi-donat-tengah.is-kursus .presensi-donat-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+}
+
+.presensi-donat-tengah.is-kursus .presensi-donat-nilai {
+  font-size: 1.6rem;
+}
+
+.presensi-donat-legenda {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+  flex: 1 1 360px;
+  gap: 6px;
+  min-width: 0;
+}
+
+.presensi-donat-legenda-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 48px;
+  padding: 7px 9px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.presensi-donat-legenda-item:hover {
+  background-color: var(--surface-alt);
+}
+
+.presensi-donat-legenda-item.is-active {
+  border-color: var(--presensi-aksen, var(--border));
+  background-color: var(--surface-alt);
+}
+
+.presensi-donat-legenda-item:focus-visible {
+  outline: 2px solid var(--presensi-aksen, var(--primary));
+  outline-offset: -2px;
+}
+
+.presensi-donat-titik {
+  flex-shrink: 0;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.presensi-donat-legenda-teks {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.presensi-donat-legenda-nama {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.presensi-donat-legenda-meta {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+}
+
+.presensi-donat-legenda-persen {
+  margin-left: auto;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* --- Toolbar pencarian & aksi -------------------------------------------- */
+
+.presensi-toolbar.card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  margin: 0;
+}
+
+.presensi-cari {
+  position: relative;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.presensi-cari > svg {
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  color: var(--text-muted);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.presensi-cari input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 40px 10px 40px;
+  border: 1px solid var(--text-muted);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.presensi-cari input::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+.presensi-cari input:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.presensi-cari input::-webkit-search-cancel-button,
+.presensi-cari input::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.presensi-cari-hapus {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--text-muted);
+  transform: translateY(-50%);
+}
+
+.presensi-cari-hapus:hover {
+  background-color: var(--surface-alt);
+  color: var(--text);
+}
+
+.presensi-aksi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.presensi-tombol.btn {
+  min-height: 44px;
+}
+
+.presensi-hasil {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* --- Daftar mata kuliah --------------------------------------------------- */
+
+.presensi-daftar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.presensi-kartu.card {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.presensi-kartu.card:hover {
+  border-color: var(--presensi-aksen);
+}
+
+.presensi-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 20px;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 16px 18px;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.presensi-header:hover {
+  background-color: var(--surface-alt);
+}
+
+.presensi-header:focus-visible {
+  outline: 2px solid var(--presensi-aksen);
+  outline-offset: -3px;
+}
+
+.presensi-identitas {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.presensi-kode {
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background-color: var(--surface-alt);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.presensi-nama {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.presensi-dosen {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+}
+
+.presensi-sks {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.presensi-chevron {
+  display: inline-flex;
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+
+.presensi-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* --- Cincin progres SVG --------------------------------------------------- */
+
+.presensi-progres {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.presensi-cincin {
+  position: relative;
+  display: block;
+  width: 84px;
+  height: 84px;
+}
+
+.presensi-cincin svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.presensi-cincin-latar {
+  stroke: var(--border);
+}
+
+.presensi-cincin-garis {
+  stroke: var(--presensi-aksen, var(--primary));
+}
+
+.presensi-cincin-angka {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  font-size: 1.05rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.presensi-cincin-persen {
+  margin-left: 1px;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.presensi-cincin-ket {
+  max-width: 100px;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+}
+
+/* --- Panel rincian pertemuan --------------------------------------------- */
+
+.presensi-panel {
+  display: none;
+}
+
+.presensi-panel.open {
+  display: block;
+  padding: 0 18px 18px;
+  animation: presensi-panel-muncul 0.22s ease;
+}
+
+@keyframes presensi-panel-muncul {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.presensi-panel-kepala {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 14px;
+  padding: 12px 0 10px;
+  border-top: 1px solid var(--border);
+}
+
+.presensi-panel-kepala h3 {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.presensi-panel-kepala span {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.presensi-legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 10px;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.presensi-legenda-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+}
+
+.presensi-legenda-item--present svg {
+  color: var(--primary);
+}
+
+.presensi-legenda-item--absent svg {
+  color: var(--danger);
+}
+
+.presensi-legenda-item--not-evaluated svg {
+  color: var(--text-muted);
+}
+
+.presensi-pertemuan {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.presensi-pertemuan-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 44px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface-alt);
+}
+
+.presensi-pertemuan-item--absent {
+  border-color: var(--danger);
+  background-color: var(--danger-soft);
+}
+
+.presensi-pertemuan-nomor {
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.presensi-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.presensi-status--present {
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
+
+.presensi-status--absent {
+  background-color: var(--danger-soft);
+  color: var(--danger);
+}
+
+.presensi-status--not-evaluated {
+  background-color: var(--surface);
+  color: var(--text-muted);
+}
+
+/* --- Pesan kosong & catatan ---------------------------------------------- */
+
+.presensi-kosong.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 20px;
+  margin: 0;
+}
+
+.presensi-kosong p {
+  margin: 0;
+}
+
+.presensi-catatan {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.presensi-catatan svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* --- Dialog Self Check-In ------------------------------------------------- */
+
+.presensi-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background-color: rgba(4, 10, 8, 0.62);
+}
+
+.presensi-dialog.card {
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
+  padding: 20px;
+  margin: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow: var(--shadow);
+}
+
+.presensi-dialog-kepala {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.presensi-dialog-judul-grup {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.presensi-dialog-ikon {
+  display: grid;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border-radius: 12px;
+  background-color: var(--primary-soft);
+  color: var(--primary);
+}
+
+.presensi-dialog-kepala h2 {
+  margin: 0;
+  font-size: 1.08rem;
+}
+
+.presensi-dialog-tutup {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: -6px -6px 0 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--text-muted);
+}
+
+.presensi-dialog-tutup:hover {
+  background-color: var(--surface-alt);
+  color: var(--text);
+}
+
+.presensi-dialog-deskripsi {
+  margin: 12px 0 16px;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.presensi-pin-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.presensi-pin-input {
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 12px 8px 20px;
+  border: 1.5px solid var(--text-muted);
+  border-radius: var(--radius-sm);
+  background-color: var(--surface);
+  color: var(--text);
+  font-size: 1.45rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.38em;
+  text-align: center;
+}
+
+.presensi-pin-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.65;
+}
+
+.presensi-pin-input.is-error {
+  border-color: var(--danger);
+}
+
+.presensi-pin-bantuan {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+}
+
+.presensi-pin-galat {
+  margin: 8px 0 0;
+  color: var(--danger);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.presensi-dialog-aksi {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.presensi-dialog-aksi .btn {
+  min-height: 44px;
+}
+
+.presensi-checkin-sukses {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 0 2px;
+  color: var(--primary);
+  text-align: center;
+}
+
+.presensi-checkin-sukses-judul {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.presensi-checkin-sukses-teks {
+  margin: 0 0 10px;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+/* --- Palet warna unik per mata kuliah ------------------------------------
+   Nilai terang dipakai di mode Light, nilai lebih terang dipakai di Dark.
+   Semua varian punya kontras >= 3:1 terhadap permukaan kartu masing-masing:
+   #ffffff (Light) dan #101c17 (Dark). Dipakai juga oleh segmen donat.
+   ------------------------------------------------------------------------- */
+
+:root {
+  --presensi-warna-teal: #0f766e;
+  --presensi-warna-amber: #b45309;
+  --presensi-warna-blue: #1d4ed8;
+  --presensi-warna-rose: #9f1239;
+  --presensi-warna-violet: #6d28d9;
+  --presensi-warna-lime: #4d7c0f;
+  --presensi-warna-cyan: #0e7490;
+  --presensi-warna-fuchsia: #a21caf;
+}
+
+[data-theme='dark'] {
+  --presensi-warna-teal: #2dd4bf;
+  --presensi-warna-amber: #fbbf24;
+  --presensi-warna-blue: #60a5fa;
+  --presensi-warna-rose: #fb7185;
+  --presensi-warna-violet: #a78bfa;
+  --presensi-warna-lime: #a3e635;
+  --presensi-warna-cyan: #22d3ee;
+  --presensi-warna-fuchsia: #e879f9;
+}
+
+/* --- Utilitas & preferensi gerak ----------------------------------------- */
+
+.presensi-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presensi-kartu.card,
+  .presensi-header,
+  .presensi-chevron,
+  .presensi-donat-segmen,
+  .presensi-donat-legenda-item {
+    transition: none;
+  }
+
+  .presensi-panel.open {
+    animation: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .presensi-overall-isi {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .presensi-donat {
+    align-self: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .presensi-header {
+    grid-template-columns: minmax(0, 1fr) auto 16px;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .presensi-panel.open {
+    padding: 0 14px 14px;
+  }
+
+  .presensi-cincin {
+    width: 70px;
+    height: 70px;
+  }
+
+  .presensi-cincin-angka {
+    font-size: 0.92rem;
+  }
+
+  .presensi-cincin-ket {
+    max-width: 84px;
+    font-size: 0.65rem;
+  }
+
+  .presensi-nama {
+    font-size: 0.94rem;
+  }
+
+  .presensi-aksi {
+    width: 100%;
+  }
+
+  .presensi-aksi .btn {
+    flex: 1 1 0;
+  }
+
+  .presensi-pertemuan {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .presensi-donat {
+    width: 214px;
+    height: 214px;
+  }
+
+  .presensi-donat-tengah {
+    padding: 0 40px;
+  }
+
+  .presensi-donat-nilai {
+    font-size: 1.65rem;
+  }
+
+  .presensi-cincin {
+    width: 64px;
+    height: 64px;
+  }
+
+  .presensi-cincin-ket {
+    max-width: 76px;
+  }
+
+  .presensi-pertemuan-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+/* --- Header khusus cetak -------------------------------------------------- */
+
+.presensi-cetak-header {
+  display: none;
+}
+
+/* --- Cetak rekap ---------------------------------------------------------- */
+
+@media print {
+  @page {
+    margin: 14mm;
+  }
+
+  :root,
+  :root[data-theme='dark'] {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-alt: #f1f5f3;
+    --border: #c9d4ce;
+    --text: #111827;
+    --text-muted: #4b6358;
+    --primary: #0f766e;
+    --primary-hover: #0d5e58;
+    --primary-soft: #e6f4f1;
+    --primary-text: #ffffff;
+    --danger: #b91c1c;
+    --danger-soft: #fef2f2;
+    --shadow: none;
+  }
+
+  .sidebar,
+  .topbar,
+  .mobile-menu-btn,
+  .mobile-drawer-backdrop,
+  .breadcrumbs,
+  .presensi-toolbar,
+  .presensi-overlay,
+  .presensi-catatan,
+  .no-print {
+    display: none !important;
+  }
+
+  .shell {
+    display: block;
+  }
+
+  .content-wrap {
+    max-width: none;
+    padding: 0;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: var(--text);
+  }
+
+  .presensi-cetak-header {
+    display: block;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--text);
+    font-size: 0.86rem;
+  }
+
+  .presensi-cetak-judul {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  .presensi-kartu.card {
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .presensi-overall.card {
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .presensi-donat-segmen,
+  .presensi-donat-latar {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .presensi-panel {
+    display: block !important;
+    padding: 0 14px 14px;
+  }
+
+  .presensi-chevron {
+    display: none;
+  }
+
+  .presensi-header {
+    padding: 12px 14px;
+  }
+
+  .presensi-cincin-garis,
+  .presensi-cincin-latar,
+  .presensi-status {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

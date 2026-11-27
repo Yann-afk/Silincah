@@ -1,0 +1,291 @@
+﻿/* ============================================================================
+   SILINCAH — Sistem Tema 3 Mode berbasis Teori Lingkaran Warna
+   ----------------------------------------------------------------------------
+   SILINCAH Original berpasangan pada dua warna komplementer:
+     • Navy  Tazkia  — Hue 225° (biru-ungu)
+     • Amber Komplementer — Hue 32° (jingga)
+
+   Peta lingkaran warna:
+     Light  (Original)  →  amber 32°  +  navy 225°
+     Sunset (Twilight)  →  titik tengah: coral-amber 28° + indigo 233°
+     Dark   (Reverse)   →  amber keemasan 43° + indigo 818CF8
+
+   `@property` mendaftarkan token warna agar dapat dianimasikan, sehingga
+   perpindahan tema memakai interpolasi warna halus (±650ms). Transisi
+   otomatis dimatikan bila pengguna memilih reduced motion atau elemen
+   <html> diberi kelas `.is-instant` (mis. saat halaman pertama dimuat).
+   ========================================================================== */
+
+@property --bg-canvas {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f4f6fa;
+}
+
+@property --bg-surface {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffffff;
+}
+
+@property --bg-sidebar {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #1b2a59;
+}
+
+@property --border-subtle {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #dce3f0;
+}
+
+@property --text-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #16224a;
+}
+
+@property --text-secondary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #475569;
+}
+
+@property --accent-primary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #c2590a;
+}
+
+@property --accent-secondary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #1b2a59;
+}
+
+/* Token pendukung: konteks sidebar (navy) dan aksen strong yang aman
+   untuk teks kecil (≥4.5:1) pada mode terang. */
+@property --sidebar-text {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #ffffff;
+}
+
+@property --sidebar-text-muted {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #c2cce4;
+}
+
+@property --sidebar-accent {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #f5a24c;
+}
+
+@property --accent-primary-strong {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: #a34806;
+}
+
+/* Interpolasi warna saat mode tema berganti. */
+:root {
+  transition:
+    --bg-canvas 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --bg-surface 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --bg-sidebar 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --border-subtle 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --text-primary 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --text-secondary 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --accent-primary 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --accent-secondary 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --sidebar-text 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --sidebar-text-muted 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --sidebar-accent 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    --accent-primary-strong 650ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Cadangan bila peramban tidak menganimasikan custom property. */
+body {
+  transition:
+    background-color 650ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 650ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* `.is-instant` dipakai sesaat saat tema pertama kali dipasang agar tidak
+   terjadi kilat warna saat halaman dimuat. */
+:root.is-instant,
+:root.is-instant * {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root,
+  body {
+    transition: none !important;
+  }
+}
+
+/* --- Mode Light (SILINCAH Original) -------------------------------------- */
+
+:root,
+[data-theme='light'] {
+  --bg-canvas: #f4f6fa;
+  --bg-surface: #ffffff;
+  --bg-sidebar: #1b2a59;
+  --border-subtle: #dce3f0;
+  --text-primary: #16224a;
+  --text-secondary: #475569;
+  --accent-primary: #c2590a;
+  --accent-secondary: #1b2a59;
+
+  --sidebar-text: #ffffff;
+  --sidebar-text-muted: #c2cce4;
+  --sidebar-accent: #f5a24c;
+  /* Aksen strong: amber yang lebih gelap agar teks kecil tetap ≥4.5:1
+     pada canvas terang (aksen merek #C2590A = 4.11:1). */
+  --accent-primary-strong: #a34806;
+
+  /* Alias token yang dipakai seluruh aplikasi */
+  --bg: var(--bg-canvas);
+  --surface: var(--bg-surface);
+  --surface-alt: #edf1f9;
+  --border: var(--border-subtle);
+  --text: var(--text-primary);
+  --text-muted: var(--text-secondary);
+  --primary: var(--accent-primary-strong);
+  --primary-hover: #8f3e05;
+  --primary-soft: #fbeade;
+  --primary-text: #ffffff;
+  --danger: #b3261e;
+  --danger-soft: #fbe9e7;
+  --shadow: 0 4px 20px rgba(22, 34, 74, 0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+/* --- Mode Sunset / Twilight (titik tengah lingkaran warna) ---------------- */
+
+[data-theme='sunset'] {
+  --bg-canvas: #232946;
+  --bg-surface: #2e335a;
+  --bg-sidebar: #1b2038;
+  --border-subtle: #464d7a;
+  --text-primary: #f4f5fa;
+  --text-secondary: #c5cbe3;
+  --accent-primary: #f4a261;
+  --accent-secondary: #8fa2ff;
+
+  --sidebar-text: #f4f5fa;
+  --sidebar-text-muted: #aeb6d6;
+  --sidebar-accent: #f4a261;
+  --accent-primary-strong: #f4a261;
+
+  --surface-alt: #383e6b;
+  --primary-hover: #f8b982;
+  --primary-soft: rgba(244, 162, 97, 0.16);
+  --primary-text: #2a1c12;
+  --danger: #ff9a91;
+  --danger-soft: rgba(255, 154, 145, 0.16);
+  --shadow: 0 4px 24px rgba(5, 7, 18, 0.55);
+}
+
+/* --- Mode Dark (Reverse SILINCAH) ---------------------------------------- */
+
+[data-theme='dark'] {
+  --bg-canvas: #0d1326;
+  --bg-surface: #151e3b;
+  --bg-sidebar: #090d1a;
+  --border-subtle: #25325b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-primary: #fbbf24;
+  --accent-secondary: #818cf8;
+
+  --sidebar-text: #f8fafc;
+  --sidebar-text-muted: #94a3b8;
+  --sidebar-accent: #fbbf24;
+  --accent-primary-strong: #fbbf24;
+
+  --surface-alt: #1d2748;
+  --primary-hover: #fcd34d;
+  --primary-soft: rgba(251, 191, 36, 0.16);
+  --primary-text: #1a1204;
+  --danger: #ff9a91;
+  --danger-soft: rgba(255, 154, 145, 0.16);
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Palet grafis pada mode Twilight agar tetap terbaca di atas kartu indigo.
+   Diterapkan lewat `html[data-theme='sunset']` (spesifisitas lebih tinggi)
+   sehingga tidak mengubah file fitur akademik. */
+html[data-theme='sunset'] {
+  --presensi-warna-teal: #2dd4bf;
+  --presensi-warna-amber: #fbbf24;
+  --presensi-warna-blue: #60a5fa;
+  --presensi-warna-rose: #fb7185;
+  --presensi-warna-violet: #c4b5fd;
+  --presensi-warna-lime: #a3e635;
+  --presensi-warna-cyan: #22d3ee;
+  --presensi-warna-fuchsia: #e879f9;
+}
+
+/* --- Cetak: latar putih polos, apa pun tema yang aktif ------------------ */
+
+@media print {
+  :root {
+    transition: none !important;
+  }
+
+  /* Paksa token ke palet cetak (putih polos) untuk semua mode tema.
+     Specificity `0-2-0` memastikan aturan ini mengalahkan blok tema. */
+  :root,
+  :root[data-theme='light'],
+  :root[data-theme='sunset'],
+  :root[data-theme='dark'] {
+    --bg-canvas: #ffffff;
+    --bg-surface: #ffffff;
+    --bg-sidebar: #ffffff;
+    --border-subtle: #c9c9c9;
+    --text-primary: #000000;
+    --text-secondary: #333333;
+    --accent-primary: #8f3e05;
+    --accent-secondary: #333333;
+    --sidebar-text: #000000;
+    --sidebar-text-muted: #333333;
+    --sidebar-accent: #8f3e05;
+    --accent-primary-strong: #8f3e05;
+
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-alt: #f4f4f4;
+    --border: #c9c9c9;
+    --text: #000000;
+    --text-muted: #333333;
+    --primary: #8f3e05;
+    --primary-hover: #6f3004;
+    --primary-soft: #fbeade;
+    --primary-text: #ffffff;
+    --danger: #8a1c13;
+    --danger-soft: #fbe9e7;
+    --shadow: none;
+  }
+
+  html,
+  body,
+  .shell,
+  .main-area,
+  .content-wrap,
+  .auth-layout,
+  .auth-card,
+  .card,
+  .topbar,
+  .sidebar {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+  }
+}
